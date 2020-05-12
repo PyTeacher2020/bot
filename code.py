@@ -1,38 +1,9 @@
-import requests
-from time import sleep
+import telebot
 
-url = "https://api.telegram.org/bot<1163060645:AAFJCM4Ud8ytSwYAjQVi4TS8Oi04hBMbxp4>/"
+bot = telebot.TeleBot('776550937:AAELEr0c3H6dM-9QnlDD-0Q0Fcd65pPyAiM')
 
+@bot.message_handler(commands=['start'])
+def start_message(message):
+    bot.send_message(message.chat.id, 'Привет, ты написал мне /start')
 
-def get_updates_json(request):
-    params = {'timeout': 100, 'offset': None}
-    response = requests.get(request + 'getUpdates', data=params)
-    return response.json()
-
-
-def last_update(data):
-    results = data['result']
-    total_updates = len(results) - 1
-    return results[total_updates]
-def get_chat_id(update):
-    chat_id = update['message']['chat']['id']
-    return chat_id
-
-def send_mess(chat, text):
-    params = {'chat_id': chat, 'text': text}
-    response = requests.post(url + 'sendMessage', data=params)
-    return response
-
-chat_id = get_chat_id(last_update(get_updates_json(url)))
-send_mess(chat_id, 'Your message goes here')
-
-def main():
-    update_id = last_update(get_updates_json(url))['update_id']
-    while True:
-        if update_id == last_update(get_updates_json(url))['update_id']:
-           send_mess(get_chat_id(last_update(get_updates_json(url))), 'test')
-           update_id += 1
-        sleep(1)
-
-if __name__ == '__main__':
-    main()
+bot.polling()
